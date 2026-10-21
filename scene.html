@@ -1,0 +1,647 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>relay.pleb.one promo</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=block" rel="stylesheet">
+<style>
+  /* relay.pleb.one's palette (sampled from the site): matrix green on near-black */
+  :root {
+    --bg: #05080a; --panel: #0d1210; --bar: #1c2530; --green: #22c55e; --green2: #4ade80; --mint: #2dd4bf;
+    --fg: #e5e7eb; --dim: #9ca3af; --faint: #4b5563; --red: #ef4444; --amber: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg);
+    font-family: Inter, sans-serif; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  .layer { position: absolute; inset: 0; }
+  .mono { font-family: "JetBrainsMono Nerd Font", monospace; }
+  .sg { font-family: "Space Grotesk", sans-serif; }
+  .tr { font-family: Anton, sans-serif; text-transform: uppercase; letter-spacing: 4px; }
+  #rain { position: absolute; inset: 0; }
+  #vignette { position: absolute; inset: 0; pointer-events: none; z-index: 90;
+    background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.65) 100%); }
+  #flash { position: absolute; inset: 0; z-index: 95; background: #d9ffe6; opacity: 0; }
+  .center { position: absolute; left: 0; right: 0; text-align: center; }
+  .glow { color: var(--green2); text-shadow: 0 0 18px rgba(74,222,128,.75), 0 0 60px rgba(34,197,94,.45); }
+
+  /* a terminal window in the site's style */
+  .tw { position: absolute; background: rgba(14,16,15,.96); border: 2px solid rgba(34,197,94,.55); border-radius: 12px; overflow: hidden;
+    box-shadow: 0 0 40px rgba(34,197,94,.35), 0 30px 90px rgba(0,0,0,.7); }
+  .tw .tb { height: 46px; background: var(--bar); display: flex; align-items: center; padding: 0 18px; gap: 9px; position: relative; }
+  .tw .tb i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  .tw .tb i:nth-child(1) { background: #ef4444; } .tw .tb i:nth-child(2) { background: #eab308; } .tw .tb i:nth-child(3) { background: #22c55e; }
+  .tw .tb span { position: absolute; left: 0; right: 0; text-align: center; color: var(--green2); font-size: 19px; }
+
+  /* ---------- 0: cold open ---------- */
+  #prod { top: 470px; font-size: 40px; letter-spacing: 16px; color: #cfd8d2; }
+  #prod small { display: block; margin-top: 14px; font-size: 20px; letter-spacing: 8px; color: var(--green); font-family: "JetBrainsMono Nerd Font", monospace; }
+
+  /* ---------- 1: in a world ---------- */
+  #world { top: 400px; font-size: 190px; color: #f3f4f6; text-shadow: 0 10px 60px rgba(0,0,0,.9); }
+  #feed { position: absolute; left: 560px; top: 0; width: 800px; height: 1080px; overflow: hidden; }
+  #feedhead { position: absolute; left: 560px; top: 0; width: 800px; height: 70px; background: #0b0f0d; border-bottom: 1px solid #1f2a24;
+    display: flex; align-items: center; padding: 0 26px; font-size: 24px; font-weight: 700; z-index: 5; }
+  #feedhead em { font-style: normal; margin-left: auto; font-size: 18px; color: var(--red); font-weight: 600; }
+  .post { position: absolute; left: 0; width: 800px; padding: 22px 26px; background: #0f1412; border-bottom: 1px solid #1f2a24; display: flex; gap: 18px; }
+  .post .av { width: 64px; height: 64px; flex: none; border-radius: 50%; background: #1d2622; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+  .post .nm { font-size: 22px; font-weight: 700; color: #f3f4f6; } .post .nm span { color: var(--faint); font-weight: 500; margin-left: 8px; }
+  .post .tx { margin-top: 6px; font-size: 25px; line-height: 1.35; color: #d1d5db; }
+  .bub { position: absolute; padding: 16px 24px; border-radius: 22px; background: #f3f4f6; color: #111; font-size: 30px; font-weight: 700;
+    box-shadow: 0 16px 40px rgba(0,0,0,.6); white-space: nowrap; z-index: 8; }
+  .bub small { display: block; font-size: 17px; font-weight: 600; color: #6b7280; margin-bottom: 2px; }
+  #scam { position: absolute; left: 430px; top: 300px; width: 1060px; padding: 34px 40px; border-radius: 22px; background: #121816; z-index: 9;
+    border: 3px solid var(--amber); box-shadow: 0 0 80px rgba(251,191,36,.35), 0 40px 120px rgba(0,0,0,.8); display: flex; gap: 28px; }
+  #scam .av { width: 110px; height: 110px; flex: none; border-radius: 50%; background: #f7931a; display: flex; align-items: center; justify-content: center;
+    font-size: 70px; font-weight: 900; color: #fff; }
+  #scam .nm { font-size: 34px; font-weight: 800; color: #fff; line-height: 1.2; }
+  #scam .ck { color: #3b82f6; letter-spacing: -4px; }
+  #scam .tx { margin-top: 12px; font-size: 34px; line-height: 1.35; color: #f3f4f6; }
+  #scam .tx b { color: var(--amber); }
+  #scam .meta { margin-top: 14px; font-size: 21px; color: var(--dim); }
+  #dared { top: 330px; font-size: 92px; color: #e5e7eb; }
+  #server { position: absolute; left: 860px; top: 500px; width: 200px; height: 250px; }
+  #server .u { position: absolute; left: 0; width: 200px; height: 70px; border-radius: 10px; background: #0f1513; border: 2px solid rgba(34,197,94,.6);
+    box-shadow: 0 0 30px rgba(34,197,94,.3); }
+  #server .u i { position: absolute; left: 22px; top: 27px; width: 14px; height: 14px; border-radius: 50%; background: var(--green2); box-shadow: 0 0 12px var(--green2); }
+  #server .u b { position: absolute; left: 52px; right: 22px; top: 31px; height: 6px; border-radius: 3px; background: #1f2d26; }
+  #stamp { position: absolute; left: 0; right: 0; top: 380px; text-align: center; z-index: 20; }
+  #stamp div { display: inline-block; padding: 26px 56px; border: 10px solid var(--green2); border-radius: 18px; font-size: 150px; line-height: 1.05;
+    color: var(--green2); background: rgba(5,8,10,.85); box-shadow: 0 0 60px rgba(74,222,128,.5), inset 0 0 40px rgba(74,222,128,.25); }
+  .bot { position: absolute; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; background: #1d2622; border: 3px solid #39443e;
+    display: flex; align-items: center; justify-content: center; font-size: 54px; z-index: 6; }
+
+  /* ---------- 2: title ---------- */
+  #fall { top: 440px; font-size: 150px; color: #f9fafb; }
+  #logo { top: 330px; font-size: 200px; font-weight: 700; letter-spacing: -4px; }
+  #logo .bolt { color: var(--amber); text-shadow: 0 0 30px rgba(251,191,36,.8); margin-right: 18px; }
+  #tag { top: 610px; font-size: 46px; letter-spacing: 18px; color: #d1fae5; }
+  #wss { top: 710px; font-size: 30px; color: var(--green); }
+
+  /* ---------- 3: features ---------- */
+  #t3 { left: 100px; top: 250px; width: 1020px; height: 400px; }
+  #t3 pre { padding: 26px 30px; font-size: 26px; line-height: 44px; color: #d1d5db; white-space: pre; }
+  #t3 pre .p { color: var(--green2); } #t3 pre .i { color: #9ca3af; } #t3 pre .s { color: var(--green2); } #t3 pre .r { color: #f97316; }
+  .feat { position: absolute; left: 1180px; width: 660px; padding: 26px 30px; border-radius: 16px; background: rgba(13,18,16,.95);
+    border: 2px solid rgba(34,197,94,.5); box-shadow: 0 0 30px rgba(34,197,94,.2); display: flex; align-items: center; gap: 24px; }
+  .feat .e { font-size: 60px; width: 76px; text-align: center; }
+  .feat b { display: block; font-family: Anton, sans-serif; font-weight: 400; font-size: 46px; letter-spacing: 2px; color: #f3f4f6; line-height: 1.05; text-transform: uppercase; }
+  .feat span { display: block; margin-top: 4px; font-size: 22px; color: var(--dim); }
+  #crab { position: absolute; left: 110px; top: 700px; font-size: 40px; color: var(--dim); }
+  #crab b { color: #f97316; }
+  #hack { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-family: Anton, sans-serif; font-size: 230px; line-height: 1;
+    font-style: italic; letter-spacing: 6px; transform: skewX(-8deg);
+    background: linear-gradient(90deg, #22c55e, #2dd4bf, #a855f7, #ec4899, #fbbf24); -webkit-background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 24px rgba(168,85,247,.55)); }
+  #hackrgb { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-family: Anton, sans-serif; font-size: 230px; line-height: 1;
+    font-style: italic; letter-spacing: 6px; transform: skewX(-8deg); color: rgba(236,72,153,.5); mix-blend-mode: screen; }
+  #polite { position: absolute; left: 1150px; top: 640px; padding: 22px 34px; background: #fef08a; color: #3f3a10; font-size: 54px; font-weight: 800;
+    border-radius: 6px; box-shadow: 0 20px 50px rgba(0,0,0,.6); transform-origin: 30% 0; }
+  #polite small { display: block; font-size: 24px; font-weight: 600; }
+
+  /* ---------- 4: web of trust ---------- */
+  #weapon { top: 430px; font-size: 140px; color: #f9fafb; }
+  #wtitle { top: 70px; font-size: 92px; }
+  #graph { position: absolute; inset: 0; }
+  .node { position: absolute; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; background: #10201a; border: 3px solid var(--green);
+    box-shadow: 0 0 22px rgba(34,197,94,.45); display: flex; align-items: center; justify-content: center; font-size: 42px; z-index: 3; }
+  .node.new { border-color: #6b7280; box-shadow: none; background: #1a1f1d; }
+  #ring { position: absolute; left: 960px; top: 580px; width: 820px; height: 820px; margin: -410px 0 0 -410px; border-radius: 50%;
+    border: 4px dashed rgba(74,222,128,.55); box-shadow: 0 0 50px rgba(34,197,94,.25), inset 0 0 80px rgba(34,197,94,.12); }
+  .tagl { position: absolute; padding: 10px 20px; border-radius: 10px; font-size: 28px; font-weight: 800; letter-spacing: 1px; white-space: nowrap; z-index: 6; }
+  .tagl.no { background: var(--red); color: #fff; } .tagl.ok { background: var(--green2); color: #05140a; }
+  #tickets { position: absolute; left: 0; right: 0; top: 770px; display: flex; justify-content: center; gap: 22px; z-index: 7; }
+  .tk { width: 180px; height: 96px; border-radius: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #2a1a03; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-weight: 900; font-size: 26px; letter-spacing: 2px; box-shadow: 0 14px 30px rgba(0,0,0,.5); position: relative; }
+  .tk::before, .tk::after { content: ""; position: absolute; top: 34px; width: 28px; height: 28px; border-radius: 50%; background: var(--bg); }
+  .tk::before { left: -14px; } .tk::after { right: -14px; }
+  .tk small { font-size: 15px; letter-spacing: 3px; font-weight: 700; }
+  #fivelbl { top: 900px; font-size: 40px; color: var(--amber); }
+
+  /* ---------- 5: accountability ---------- */
+  #spamq { top: 90px; font-size: 110px; color: #f9fafb; }
+  #you, #guest { position: absolute; top: 470px; width: 220px; height: 220px; margin-left: -110px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 130px; background: #10201a; border: 5px solid var(--green); box-shadow: 0 0 40px rgba(34,197,94,.4); }
+  #guest { border-color: #6b7280; background: #1a1f1d; box-shadow: none; }
+  #you small, #guest small { position: absolute; top: 236px; left: -60px; right: -60px; text-align: center; font-size: 30px; font-weight: 700; color: var(--dim); }
+  #handtk { position: absolute; top: 540px; z-index: 5; }
+  #sus { position: absolute; left: 0; right: 0; top: 280px; display: flex; justify-content: center; gap: 22px; }
+  #susstamp { position: absolute; left: 0; right: 0; top: 300px; text-align: center; z-index: 8; }
+  #susstamp div { display: inline-block; padding: 14px 40px; border: 8px solid var(--red); border-radius: 14px; color: var(--red); font-size: 80px;
+    background: rgba(5,8,10,.8); transform: rotate(-8deg); }
+  #month { top: 520px; font-size: 44px; color: #fca5a5; }
+  #strikes { position: absolute; left: 0; right: 0; top: 330px; display: flex; justify-content: center; gap: 60px; }
+  .x { width: 250px; height: 250px; border-radius: 26px; border: 8px solid #7f1d1d; background: #1c0a0a; display: flex; align-items: center; justify-content: center;
+    font-family: Anton, sans-serif; font-size: 230px; line-height: 1; color: var(--red); text-shadow: 0 0 40px rgba(239,68,68,.8); }
+  #gone { top: 680px; font-size: 64px; color: #fca5a5; }
+  #cal { position: absolute; left: 0; right: 0; top: 250px; display: flex; justify-content: center; gap: 50px; }
+  .mo { width: 250px; height: 280px; border-radius: 18px; background: #f3f4f6; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.6); position: relative; }
+  .mo .h { height: 70px; background: var(--green); color: #05140a; font-family: Anton, sans-serif; font-size: 40px; letter-spacing: 3px; display: flex; align-items: center; justify-content: center; }
+  .mo .c { position: absolute; left: 0; right: 0; top: 90px; text-align: center; font-size: 140px; color: var(--green); font-weight: 900; }
+  #fifteen { position: absolute; left: 0; right: 0; top: 250px; display: grid; grid-template-columns: repeat(5, 180px); gap: 22px; justify-content: center; }
+  #promo { top: 690px; font-size: 96px; }
+  #standing { top: 640px; font-size: 64px; color: #d1fae5; }
+
+  /* ---------- 6: login ---------- */
+  .shot { position: absolute; transform-origin: 50% 50%; }
+  .shot img { display: block; width: 100%; border-radius: 14px; box-shadow: 0 0 0 2px rgba(34,197,94,.45), 0 40px 120px rgba(0,0,0,.75); }
+  .hl { position: absolute; border: 5px solid var(--amber); border-radius: 14px; box-shadow: 0 0 30px rgba(251,191,36,.7); }
+  .call { position: absolute; width: 560px; padding: 24px 28px; border-radius: 16px; background: rgba(10,14,12,.95);
+    border: 2px solid rgba(34,197,94,.55); box-shadow: 0 20px 60px rgba(0,0,0,.6); z-index: 10; }
+  .call .k { display: inline-block; font-size: 16px; font-weight: 800; letter-spacing: 2.5px; color: #05140a; background: var(--green2);
+    padding: 5px 12px; border-radius: 6px; margin-bottom: 12px; }
+  .call b { display: block; font-size: 42px; font-weight: 800; color: #f9fafb; letter-spacing: -.5px; line-height: 1.12; }
+  .call span.s { display: block; margin-top: 10px; font-size: 23px; color: var(--dim); line-height: 1.4; }
+  #laptop { position: absolute; left: 610px; top: 260px; width: 700px; height: 440px; border-radius: 22px 22px 6px 6px; border: 14px solid #2b3330;
+    background: #0b100e; }
+  #laptop::after { content: ""; position: absolute; left: -90px; right: -90px; bottom: -64px; height: 40px; border-radius: 0 0 26px 26px; background: #2b3330; }
+  #key { position: absolute; left: 0; right: 0; top: 70px; text-align: center; font-size: 170px; }
+  #keylbl { position: absolute; left: 0; right: 0; top: 300px; text-align: center; font-size: 36px; color: var(--green2); }
+  #keyword { top: 800px; font-size: 64px; color: #f9fafb; }
+  #phone { position: absolute; left: 960px; top: 470px; width: 380px; height: 380px; margin: -190px 0 0 -190px; }
+  #phone .p { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 230px; }
+  #phone .no { position: absolute; inset: 0; border-radius: 50%; border: 26px solid var(--red); }
+  #phone .no::after { content: ""; position: absolute; left: 50%; top: -10px; bottom: -10px; width: 26px; margin-left: -13px; background: var(--red); transform: rotate(45deg); }
+  #home { position: absolute; left: 1300px; top: 330px; font-size: 54px; font-weight: 800; color: #fca5a5; }
+  #etline { top: 760px; font-size: 92px; color: #f9fafb; }
+  #unlike { top: 110px; font-size: 76px; color: var(--dim); }
+
+  /* ---------- 8: end ---------- */
+  #elogo { top: 170px; font-size: 170px; font-weight: 700; letter-spacing: -3px; }
+  #elogo .bolt { color: var(--amber); text-shadow: 0 0 30px rgba(251,191,36,.8); margin-right: 14px; }
+  #qq { top: 420px; font-size: 84px; color: #f9fafb; }
+  #qq em { font-style: normal; color: var(--green2); }
+  #btns { position: absolute; left: 0; right: 0; top: 600px; display: flex; justify-content: center; gap: 40px; }
+  .btn { padding: 26px 48px; border-radius: 14px; font-size: 40px; font-weight: 700; font-family: "Space Grotesk", sans-serif; }
+  .btn small { display: block; font-size: 22px; font-weight: 500; opacity: .8; margin-bottom: 4px; }
+  .btn.solid { background: #16a34a; color: #03140a; box-shadow: 0 0 40px rgba(34,197,94,.6); }
+  .btn.line { border: 3px solid var(--green2); color: var(--green2); background: rgba(5,8,10,.8); }
+  #eurl { top: 830px; font-size: 34px; color: var(--dim); }
+  #eurl b { color: var(--green2); font-weight: 600; }
+  #game { position: absolute; inset: 0; background: #020403; }
+  #game pre { position: absolute; left: 260px; top: 360px; font-size: 76px; line-height: 1.4; color: #6dfc9a; white-space: pre;
+    text-shadow: 0 0 16px rgba(109,252,154,.7); }
+  #game .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 2px, transparent 2px 5px); }
+  #gameurl { position: absolute; left: 260px; top: 700px; font-size: 34px; color: #2f9e5a; }
+
+  /* ---------- captions ---------- */
+  #cap { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); max-width: 1400px; padding: 10px 24px;
+    border-radius: 10px; background: rgba(2, 5, 4, .8); color: #f3f4f6; font-size: 31px; font-weight: 600; line-height: 1.3;
+    text-align: center; z-index: 100; border: 1px solid rgba(34,197,94,.25); }
+</style>
+</head>
+<body>
+<canvas id="rain" width="1920" height="1080"></canvas>
+
+<div id="s0" class="layer">
+  <div id="prod" class="center tr">A Pleb.one Production<small>// encrypted · relayed · vouched for</small></div>
+</div>
+
+<div id="s1" class="layer">
+  <div id="feedhead"><span>🏠 Your Feed</span><em id="unread">● 9,999+ new</em></div>
+  <div id="feed"></div>
+  <div id="bubs"></div>
+  <div id="scam"><div class="av">₿</div><div><div class="nm">Satoshi Nakamoto Official Real <span class="ck" id="checks">✔</span></div>
+    <div class="tx">🎁 <b>FREE BITCOIN GIVEAWAY</b> 🎁<br>Send 0.1 BTC, get 0.2 BTC back!!! Totally not a scam!!!</div>
+    <div class="meta">⚡ 0 zaps · 🔁 4,096 reposts (all bots)</div></div></div>
+  <div id="world" class="center tr">In a world...</div>
+  <div id="dared" class="center tr">One relay dared to ask...</div>
+  <div id="server"><div class="u" style="top:0"><i></i><b></b></div><div class="u" style="top:90px"><i></i><b></b></div><div class="u" style="top:180px"><i></i><b></b></div></div>
+  <div id="bots"></div>
+  <div id="stamp"><div class="tr">Wait.<br>Who invited you?</div></div>
+</div>
+
+<div id="s2" class="layer">
+  <div id="fall" class="center tr">This fall</div>
+  <div id="logo" class="center sg glow"><span class="bolt">⚡</span>relay.pleb.one</div>
+  <div id="tag" class="center tr">The community Nostr relay</div>
+  <div id="wss" class="center mono">wss://relay.pleb.one</div>
+</div>
+
+<div id="s3" class="layer">
+  <div class="tw" id="t3"><div class="tb"><i></i><i></i><i></i><span class="mono">relay.pleb.one - Nostr Relay Server</span></div><pre class="mono" id="t3pre"></pre></div>
+  <div id="crab" class="mono"><b>🦀 Rust</b> · axum · tokio · sqlx</div>
+  <div class="feat" id="f1" style="top:230px"><div class="e">⚡</div><div><b>Lightning fast</b><span>WebSockets with minimal latency</span></div></div>
+  <div class="feat" id="f2" style="top:430px"><div class="e">🛡️</div><div><b>Censorship-resistant</b><span>Open protocol, multiple NIPs</span></div></div>
+  <div class="feat" id="f3" style="top:630px"><div class="e">🕶️</div><div><b>No trackers. Minimal logs.</b><span>Privacy first, export tools included</span></div></div>
+  <div id="hackrgb">HACK THE PLANET</div>
+  <div id="hack">HACK THE PLANET</div>
+  <div id="polite">...but politely.<small>please and thank you 🙏</small></div>
+</div>
+
+<div id="s4" class="layer">
+  <div id="weapon" class="center tr">Its secret weapon?</div>
+  <div id="wtitle" class="center tr glow">The Web of Trust</div>
+  <div id="web" class="layer">
+  <div id="ring"></div>
+  <svg id="graph" width="1920" height="1080"></svg>
+  <div id="nodes"></div>
+  <div class="bot" id="wbot">🤖</div>
+  <div class="tagl no" id="denied">ACCESS DENIED</div>
+  <div class="node new" id="newbie">🙂</div>
+  <div class="tagl ok" id="vouched">VOUCHED ✓</div>
+  </div>
+  <div id="tickets"></div>
+  <div id="fivelbl" class="center tr">5 invites / month · reset on the 1st</div>
+</div>
+
+<div id="s5" class="layer">
+  <div id="spamq" class="center tr">Invite a spammer?</div>
+  <div id="you">😎<small>you</small></div>
+  <div id="guest"><span id="gface">🥸</span><small id="gname">"totally a human"</small></div>
+  <div id="handtk" class="tk">INVITE<small>ADMIT ONE</small></div>
+  <div id="sus"></div>
+  <div id="susstamp"><div class="tr">Suspended</div></div>
+  <div id="month" class="center">No invites for 1 month</div>
+  <div id="strikes"><div class="x" id="x1">X</div><div class="x" id="x2">X</div><div class="x" id="x3">X</div></div>
+  <div id="gone" class="center tr">Invite privileges: gone for good</div>
+  <div id="cal"><div class="mo" id="m1"><div class="h">Month 1</div><div class="c">✓</div></div><div class="mo" id="m2"><div class="h">Month 2</div><div class="c">✓</div></div><div class="mo" id="m3"><div class="h">Month 3</div><div class="c">✓</div></div></div>
+  <div id="standing" class="center tr">Good standing</div>
+  <div id="fifteen"></div>
+  <div id="promo" class="center tr glow">Promoted: 15 invites / month ⭐</div>
+</div>
+
+<div id="s6" class="layer">
+  <div class="shot" id="lshot"><img src="../assets/login-crop.png"><div class="hl" id="lhl"></div></div>
+  <div class="call" id="lc1" style="left:1290px;top:520px"><div class="k">NIP-07</div><b>Browser extension</b><span class="s">Alby, nos2x, Flamingo, Horse, Nostore</span></div>
+  <div class="call" id="lc2" style="left:1290px;top:520px"><div class="k">NIP-46</div><b>Remote signer</b><span class="s">Amber, nsec.app, any Nostr Connect app</span></div>
+  <div id="laptop"><div id="key">🔑</div><div id="keylbl" class="mono">nsec · stays right here</div></div>
+  <div id="keyword" class="center tr">Your key never leaves your device</div>
+  <div id="unlike" class="center tr">Unlike E.T.</div>
+  <div id="phone"><div class="p">☎️</div><div class="no"></div></div>
+  <div id="home" class="mono">📍 HOME</div>
+  <div id="etline" class="center tr">It does not phone home</div>
+</div>
+
+<div id="s7" class="layer">
+  <div class="shot" id="dshot"><img src="../assets/dashboard-crop.png"><div class="hl" id="dhl"></div></div>
+  <div class="call" id="dc1" style="left:1310px;top:150px"><div class="k">MEMBERS ONLY</div><b>The relay control surface</b><span class="s">Events, publishers and activity at a glance.</span></div>
+  <div class="call" id="dc2" style="left:1310px;top:420px"><div class="k">LIVE FEED</div><b>Straight off the wire</b><span class="s">Notes stream in from wss://relay.pleb.one in real time.</span></div>
+  <div class="call" id="dc3" style="left:1310px;top:420px"><div class="k">IDENTITY · NIP-05</div><b>you@pleb.one ✓</b><span class="s">A verified name your Nostr client shows off.</span></div>
+  <div class="call" id="dc4" style="left:1310px;top:420px"><div class="k">INVITES</div><b>Ready to share</b><span class="s">Hand them to people you'd vouch for.</span>
+    <div id="minitk" style="display:flex;gap:10px;margin-top:16px"></div></div>
+</div>
+
+<div id="s8" class="layer">
+  <div id="elogo" class="center sg glow"><span class="bolt">⚡</span>relay.pleb.one</div>
+  <div id="qq" class="center tr">Quality <em>&gt;</em> Quantity</div>
+  <div id="btns"><div class="btn solid" id="b1"><small>Know a member?</small>Get an invite</div><div class="btn line" id="b2"><small>Don't?</small>Request Invite →</div></div>
+  <div id="eurl" class="center mono">relay.pleb.one/request · a real human reviews every request · <b>wss://relay.pleb.one</b></div>
+  <div id="game"><div class="scan"></div><pre class="mono" id="gamepre"></pre><div id="gameurl" class="mono">relay.pleb.one</div></div>
+</div>
+
+<div id="cap"></div>
+<div id="vignette"></div>
+<div id="flash"></div>
+
+<script>
+const C = CUES_PLACEHOLDER;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const show = (id, on) => { $(id).style.display = on ? "" : "none"; };
+const hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+function pop(el, t, at, dur = .35, dy = 30) { // fade/scale in
+  const p = lin(t, at, at + dur); el.style.opacity = p; el.style.transform = `translateY(${(1 - eo(p)) * dy}px) scale(${.85 + .15 * back(p)})`; return p;
+}
+function slam(el, t, at, out = 1e9, rot = 0) { // trailer card: punches in from big, fades out
+  const p = lin(t, at, at + .22), q = lin(t, out - .25, out);
+  el.style.opacity = Math.min(p, 1 - q);
+  el.style.transform = `scale(${1.6 - .6 * eo(p) + .03 * lin(t, at, at + 4)}) rotate(${rot}deg)`;
+}
+function fadeText(el, t, a, b, drift = .05) { // slow trailer fade with a gentle push-in
+  const o = Math.min(lin(t, a, a + .5), 1 - lin(t, b - .4, b));
+  el.style.opacity = o; el.style.transform = `scale(${1 + drift * lin(t, a, b)})`;
+}
+function inout(el, t, a, b, dx = 50) {
+  const p = lin(t, a, a + .4), q = lin(t, b - .3, b);
+  el.style.opacity = Math.min(p, 1 - q); el.style.transform = `translateX(${(1 - eo(p)) * dx + q * 30}px)`;
+}
+function hl(el, r, s, t, a, b) {
+  el.style.opacity = Math.min(lin(t, a, a + .3), 1 - lin(t, b - .25, b));
+  el.style.left = r[0] * s - 8 + "px"; el.style.top = r[1] * s - 8 + "px";
+  el.style.width = (r[2] - r[0]) * s + 16 + "px"; el.style.height = (r[3] - r[1]) * s + 16 + "px";
+}
+function typed(lines, t, at, cps = 40, gap = .25) { // lines of [text, cls, instant]
+  let out = "", tt = at;
+  for (const [s, cls, instant] of lines) {
+    if (t < tt) break;
+    const n = instant ? s.length : Math.min(s.length, Math.floor((t - tt) * cps));
+    out += (cls ? `<span class="${cls}">` : "") + s.slice(0, n).replace(/</g, "&lt;") + (cls ? "</span>" : "") + "\n";
+    tt += (instant ? 0 : s.length / cps) + gap;
+  }
+  return out;
+}
+const tk = (big = true) => { const d = document.createElement("div"); d.className = "tk"; d.innerHTML = big ? "INVITE<small>ADMIT ONE</small>" : ""; return d; };
+
+// ---- scene windows ----
+const SC = [["s0", 0, C.hook], ["s1", C.hook, C.title], ["s2", C.title, C.rust], ["s3", C.rust, C.wot], ["s4", C.wot, C.strike],
+  ["s5", C.strike, C.login], ["s6", C.login, C.dash], ["s7", C.dash, C.end], ["s8", C.end, 1e9]];
+const CUTS = [C.title, C.name, C.rust, C.hack, C.wot, C.strike, C.login, C.dash, C.end];
+
+// ---- matrix rain (deterministic) ----
+const rc = $("rain").getContext("2d");
+const GLYPHS = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ0123456789⚡NOSTR#$%&ﾅﾆﾇﾈﾉ";
+const COLS = Array.from({ length: 64 }, (_, i) => ({ x: i * 30 + 8, speed: 120 + hash(i) * 260, off: hash(i + 99) * 2000, len: 8 + Math.floor(hash(i + 7) * 18) }));
+function rain(t, alpha) {
+  rc.fillStyle = "#05080a"; rc.fillRect(0, 0, 1920, 1080);
+  if (alpha <= 0) return;
+  rc.font = "22px 'JetBrainsMono Nerd Font', monospace"; rc.textAlign = "center";
+  for (const [ci, c] of COLS.entries()) {
+    const head = ((t * c.speed + c.off) % 1500) - 200;
+    for (let k = 0; k < c.len; k++) {
+      const y = head - k * 26; if (y < -30 || y > 1110) continue;
+      const g = GLYPHS[Math.floor(hash(ci * 31 + Math.floor(y / 26) + Math.floor(t * 3 + k)) * GLYPHS.length)];
+      const a = (k === 0 ? 1 : (1 - k / c.len) * .55) * alpha;
+      rc.fillStyle = k === 0 ? `rgba(200,255,220,${a})` : `rgba(34,197,94,${a})`;
+      rc.fillText(g, c.x, y);
+    }
+  }
+}
+
+// ---- 1: the feed ----
+const POSTS = [["🤖", "gm_bot_9000", "GM GM GM GM GM GM GM GM GM GM"], ["🤖", "PumpItPete", "🚀🚀 100x gem just launched, DM me 🚀🚀"],
+  ["🤖", "bot_44871", "Great post! Check my profile 😘"], ["🤖", "gm_bot_9001", "gm"], ["🤖", "CryptoKing_xX", "Wen moon? 🌕 Wen lambo? 🏎️"],
+  ["🤖", "bot_44872", "Great post! Check my profile 😘"], ["🤖", "AirdropAlert", "⚠️ CLAIM YOUR AIRDROP NOW ⚠️ link in bio"], ["🤖", "gm_bot_9002", "gm gm"],
+  ["🤖", "bot_44873", "Great post! Check my profile 😘"], ["🤖", "FollowBackPls", "follow for follow?? 🙏"]];
+const postEls = POSTS.map(([av, nm, tx], i) => {
+  const d = document.createElement("div"); d.className = "post";
+  d.innerHTML = `<div class="av">${av}</div><div><div class="nm">${nm}<span>· now</span></div><div class="tx">${tx}</div></div>`;
+  $("feed").appendChild(d); return { el: d, at: C.spam + .1 + i * ((C.reply - C.spam) / POSTS.length) };
+});
+const BUBS = [["Actually...", 250, 260], ["Well, ackshually 🤓", 1390, 380], ["Have you tried bitcoin?", 170, 620], ["This. 👆", 1480, 700], ["Source??", 300, 860]];
+const bubEls = BUBS.map(([s, x, y], i) => {
+  const d = document.createElement("div"); d.className = "bub"; d.innerHTML = `<small>reply guy #${i + 1}</small>${s}`;
+  d.style.left = x + "px"; d.style.top = y + "px"; $("bubs").appendChild(d); return d;
+});
+const BOTS = Array.from({ length: 9 }, (_, i) => { const d = document.createElement("div"); d.className = "bot"; d.textContent = ["🤖", "🥸", "🤖", "👾", "🤖"][i % 5];
+  $("bots").appendChild(d); const a = i / 9 * 6.283 + .3; return { el: d, a }; });
+
+// ---- 3: terminal ----
+const T3 = [["$ ./relay.pleb.one --start", "p"], ["[INFO] Starting Nostr relay...", "i", true], ["[INFO] Core: Rust 🦀 (axum + tokio + sqlx)", "i", true],
+  ["[INFO] Whitelist policy: ON", "i", true], ["[INFO] Bots: politely declined", "i", true], ["[SUCCESS] Relay online at wss://relay.pleb.one", "s", true]];
+
+// ---- 4: graph ----
+const NODES = [[960, 580, "😎"], [800, 470, "🧑‍💻"], [1120, 460, "👩‍🎤"], [760, 680, "🧙"], [1150, 700, "🦊"], [960, 380, "🐸"], [960, 790, "👨‍🚀"],
+  [640, 560, "🧑‍🌾"], [1280, 580, "🦉"], [860, 840, "🐙"], [1080, 330, "🌵"], [700, 380, "🦄"]];
+const EDGES = [[0, 1], [0, 2], [0, 3], [0, 4], [1, 5], [2, 5], [3, 7], [4, 8], [3, 6], [6, 9], [2, 10], [1, 11], [4, 6], [5, 10], [7, 11]];
+const nodeEls = NODES.map(([x, y, e]) => { const d = document.createElement("div"); d.className = "node"; d.textContent = e; d.style.left = x + "px"; d.style.top = y + "px";
+  $("nodes").appendChild(d); return d; });
+const NS = "http://www.w3.org/2000/svg";
+const edgeEls = EDGES.map(([a, b]) => { const l = document.createElementNS(NS, "line"); l.setAttribute("x1", NODES[a][0]); l.setAttribute("y1", NODES[a][1]);
+  l.setAttribute("x2", NODES[b][0]); l.setAttribute("y2", NODES[b][1]); l.setAttribute("stroke", "#4ade80"); l.setAttribute("stroke-width", "4");
+  l.setAttribute("stroke-linecap", "round"); const len = Math.hypot(NODES[b][0] - NODES[a][0], NODES[b][1] - NODES[a][1]);
+  l.setAttribute("stroke-dasharray", len); $("graph").appendChild(l); return { l, len }; });
+const vouchLine = document.createElementNS(NS, "line"); vouchLine.setAttribute("stroke", "#fbbf24"); vouchLine.setAttribute("stroke-width", "5");
+vouchLine.setAttribute("stroke-dasharray", "10 10"); $("graph").appendChild(vouchLine);
+const ticketEls = Array.from({ length: 5 }, () => $("tickets").appendChild(tk()));
+
+// ---- 5: accountability ----
+const susEls = Array.from({ length: 5 }, () => $("sus").appendChild(tk()));
+const fifEls = Array.from({ length: 15 }, () => $("fifteen").appendChild(tk()));
+Array.from({ length: 5 }, () => { const d = tk(false); d.style.width = "70px"; d.style.height = "40px"; $("minitk").appendChild(d); });
+
+const capEl = $("cap");
+
+window.render = function (t) {
+  for (const [id, a, b] of SC) show(id, t >= a && t < b);
+  // the flash on each hard cut
+  let fl = 0; for (const c of CUTS) { const d = t - c; if (d >= 0 && d < .35) fl = Math.max(fl, (1 - d / .35) * .55); }
+  $("flash").style.opacity = fl;
+
+  // rain strength per scene
+  let ra = .12;
+  if (t < C.hook) ra = .5 * lin(t, .2, 1.4);
+  else if (t < C.spam) ra = .35;
+  else if (t < C.one) ra = .06;
+  else if (t < C.title) ra = .18;
+  else if (t < C.rust) ra = t < C.name ? .1 : .55;
+  else if (t >= C.end && t < C.game) ra = .45;
+  else if (t >= C.game) ra = 0;
+  rain(t, ra);
+
+  // ---- 0 ----
+  if (t < C.hook) fadeText($("prod"), t, .3, C.hook, .04);
+
+  // ---- 1 ----
+  if (t >= C.hook && t < C.title) {
+    fadeText($("world"), t, C.hook, C.spam + .2, .08);
+    const feedOn = t >= C.spam && t < C.one;
+    show("feed", feedOn); show("feedhead", feedOn);
+    $("feedhead").style.opacity = lin(t, C.spam, C.spam + .3);
+    // posts pile in from the top; each new one pushes the stack down
+    let y = 70;
+    for (let i = postEls.length - 1; i >= 0; i--) {
+      const p = postEls[i], q = lin(t, p.at, p.at + .25);
+      if (q <= 0) { p.el.style.opacity = 0; continue; }
+      p.el.style.opacity = q; p.el.style.top = y - (1 - eo(q)) * 120 + "px";
+      y += 128 * eo(q);
+    }
+    $("unread").textContent = "● " + Math.floor(9000 + lin(t, C.spam, C.one) * 999998).toLocaleString("en-US") + " new";
+    bubEls.forEach((b, i) => {
+      const at = C.reply + i * ((C.scam - C.reply) / BUBS.length) * .9;
+      if (t < C.one) { const p = pop(b, t, at, .25, 20); b.style.transform += ` rotate(${(i % 2 ? 3 : -3)}deg)`; b.style.opacity = p * (1 - lin(t, C.scam + .3, C.scam + .8) * .6); }
+      else b.style.opacity = 0;
+    });
+    const sc = $("scam");
+    if (t < C.one) { slam(sc, t, C.scam, C.one, -2); }
+    else sc.style.opacity = 0;
+    // a verified check for every word of "Official Real..."
+    $("checks").textContent = "✔".repeat(1 + Math.floor(lin(t, C.sat + .5, C.one - .6) * 11));
+    const darkened = lin(t, C.one - .3, C.one);
+    $("feed").style.filter = `saturate(${1 - darkened}) brightness(${1 - .7 * darkened})`;
+    fadeText($("dared"), t, C.one, C.ask, .05);
+    const srv = $("server"); show("server", t >= C.one);
+    srv.style.opacity = lin(t, C.one + .4, C.one + 1);
+    srv.style.transform = `translateY(${(1 - eo(lin(t, C.one + .4, C.one + 1))) * 40}px)`;
+    // bots creep in towards the server, then get bounced on "who invited you"
+    show("bots", t >= C.one + 1);
+    BOTS.forEach((b, i) => {
+      const creep = eo(lin(t, C.one + 1 + i * .08, C.ask)), bounce = eo(lin(t, C.ask + .1, C.ask + .9));
+      const r = 760 - creep * 420 + bounce * 900;
+      b.el.style.left = 960 + Math.cos(b.a) * r * 1.3 + "px"; b.el.style.top = 625 + Math.sin(b.a) * r * .8 + "px";
+      b.el.style.transform = `rotate(${bounce * 540 * (i % 2 ? 1 : -1)}deg)`;
+    });
+    show("stamp", t >= C.ask);
+    slam($("stamp"), t, C.ask, C.title + 1, -4);
+  }
+
+  // ---- 2 ----
+  if (t >= C.title && t < C.rust) {
+    fadeText($("fall"), t, C.title, C.name, .1);
+    const lp = lin(t, C.name, C.name + .5);
+    $("logo").style.opacity = lp; $("logo").style.transform = `scale(${1.25 - .25 * eo(lp) + .03 * lin(t, C.name, C.rust)})`;
+    $("logo").style.letterSpacing = (-4 + 30 * (1 - eo(lp))) + "px";
+    fadeText($("tag"), t, C.tag, C.rust + 1, .02);
+    fadeText($("wss"), t, C.tag + .5, C.rust + 1, 0);
+  }
+
+  // ---- 3 ----
+  if (t >= C.rust && t < C.wot) {
+    const pre = t < C.hack;
+    show("t3", pre); show("crab", pre); ["f1", "f2", "f3"].forEach(f => show(f, pre));
+    if (pre) {
+      pop($("t3"), t, C.rust, .4, 40);
+      $("t3pre").innerHTML = typed(T3, t, C.rust + .3, 34, .28) + (Math.floor(t * 2) % 2 ? "█" : " ");
+      pop($("crab"), t, C.rust + 1, .4);
+      inout($("f1"), t, C.fast, 1e9, 80); inout($("f2"), t, C.cr, 1e9, 80); inout($("f3"), t, C.priv, 1e9, 80);
+    }
+    show("hack", !pre); show("hackrgb", !pre); show("polite", t >= C.polite);
+    if (!pre) {
+      const hp = lin(t, C.hack, C.hack + .3), jit = Math.sin(t * 40) * 6 * (1 - lin(t, C.hack, C.hack + 1.2));
+      $("hack").style.opacity = hp; $("hack").style.transform = `skewX(-8deg) scale(${1.3 - .3 * eo(hp) + .04 * lin(t, C.hack, C.wot)})`;
+      $("hackrgb").style.opacity = hp * .8; $("hackrgb").style.transform = `skewX(-8deg) translate(${8 + jit}px, ${-4 - jit / 2}px) scale(${1.3 - .3 * eo(hp) + .04 * lin(t, C.hack, C.wot)})`;
+      const pp = lin(t, C.polite, C.polite + .35);
+      $("polite").style.opacity = pp; $("polite").style.transform = `rotate(${-6 + 4 * (1 - back(pp))}deg) scale(${.6 + .4 * back(pp)})`;
+    }
+  }
+
+  // ---- 4 ----
+  if (t >= C.wot && t < C.strike) {
+    fadeText($("weapon"), t, C.wot, C.wot2, .1);
+    const g = t >= C.wot2;
+    ["wtitle", "ring", "graph", "nodes"].forEach(id => show(id, g));
+    if (g) {
+      pop($("wtitle"), t, C.wot2, .4);
+      $("ring").style.opacity = lin(t, C.wot2 + .6, C.wot2 + 1.2) * (.6 + .4 * Math.sin(t * 3));
+      nodeEls.forEach((n, i) => pop(n, t, C.wot2 + .1 + i * .12, .3, 0));
+      edgeEls.forEach((e, i) => { const p = lin(t, C.wot2 + .4 + i * .1, C.wot2 + .8 + i * .1); e.l.setAttribute("stroke-dashoffset", e.len * (1 - p)); e.l.style.opacity = p ? .8 : 0; });
+    }
+    // the walk-in bot
+    const wb = $("wbot"); show("wbot", t >= C.door && t < C.vouch + .5);
+    { const inP = eo(lin(t, C.door, C.door + 1)), outP = eo(lin(t, C.door + 1.1, C.door + 1.9));
+      wb.style.left = 2000 - inP * 640 + outP * 700 + "px"; wb.style.top = 300 - outP * 400 + "px";
+      wb.style.transform = `rotate(${outP * 720}deg)`; }
+    const dn = $("denied"); show("denied", t >= C.door + 1 && t < C.vouch);
+    dn.style.left = "1230px"; dn.style.top = "180px"; pop(dn, t, C.door + 1, .2, 10);
+    $("ring").style.borderColor = (t > C.door + .9 && t < C.door + 1.4) ? "rgba(239,68,68,.9)" : "rgba(74,222,128,.55)";
+    // the vouched newcomer
+    const nb = $("newbie"); show("newbie", t >= C.vouch);
+    const np = eo(lin(t, C.vouch, C.vouch + .9)), joined = t > C.vouch + 1.2;
+    nb.style.left = -80 + np * 520 + "px"; nb.style.top = "560px"; nb.className = "node" + (joined ? "" : " new");
+    vouchLine.setAttribute("x1", NODES[7][0]); vouchLine.setAttribute("y1", NODES[7][1]);
+    vouchLine.setAttribute("x2", -80 + np * 520); vouchLine.setAttribute("y2", 560); vouchLine.style.opacity = lin(t, C.vouch + .9, C.vouch + 1.1);
+    const vc = $("vouched"); show("vouched", t >= C.vouch + 1); vc.style.left = "330px"; vc.style.top = "640px"; pop(vc, t, C.vouch + 1, .25, 10);
+    // make room for the tickets: the web shrinks towards the title
+    const sh = eio(lin(t, C.five, C.five + .5));
+    $("web").style.transformOrigin = "960px 160px"; $("web").style.transform = `scale(${1 - .26 * sh})`;
+    show("tickets", t >= C.five); show("fivelbl", t >= C.five);
+    ticketEls.forEach((e, i) => { pop(e, t, C.five + .2 + i * .18, .3, 60); e.style.transform += ` rotate(${(i - 2) * 4}deg)`; });
+    pop($("fivelbl"), t, C.five + 1.2, .4);
+  }
+
+  // ---- 5 ----
+  if (t >= C.strike && t < C.login) {
+    const a = t < C.lose;
+    ["spamq", "you", "guest", "handtk"].forEach(id => show(id, a));
+    if (a) {
+      pop($("spamq"), t, C.strike, .3);
+      $("you").style.left = "620px"; $("guest").style.left = "1300px";
+      pop($("you"), t, C.strike + .1, .3, 0); pop($("guest"), t, C.strike + .25, .3, 0);
+      const hp = eio(lin(t, C.strike + .6, C.strike + 1.4));
+      $("handtk").style.left = 700 + hp * 420 + "px"; $("handtk").style.opacity = lin(t, C.strike + .5, C.strike + .7);
+      // the disguise slips
+      const off = t > C.lose - .45;
+      $("gface").textContent = off ? "🤖" : "🥸"; $("gname").textContent = off ? "bot_44874" : '"totally a human"';
+      $("guest").style.borderColor = off ? "#ef4444" : "#6b7280";
+    }
+    const b = t >= C.lose && t < C.three;
+    ["sus", "susstamp", "month"].forEach(id => show(id, b));
+    if (b) {
+      const g = lin(t, C.lose + .5, C.lose + 1);
+      susEls.forEach((e, i) => { e.style.filter = `grayscale(${g}) brightness(${1 - .5 * g})`; pop(e, t, C.lose + i * .06, .25, 30); });
+      slam($("susstamp"), t, C.lose + .9, C.three + 1);
+      pop($("month"), t, C.lose + 1.4, .4);
+    }
+    const c = t >= C.three && t < C.good;
+    ["strikes", "gone"].forEach(id => show(id, c));
+    if (c) {
+      // one buzzer per strike, Family Feud style
+      ["x1", "x2", "x3"].forEach((x, i) => slam($(x), t, C.three + .1 + i * .55));
+      pop($("gone"), t, C.three + 2.1, .4);
+    }
+    const d = t >= C.good && t < C.fifteen;
+    ["cal", "standing"].forEach(id => show(id, d));
+    if (d) {
+      ["m1", "m2", "m3"].forEach((m, i) => { pop($(m), t, C.good + .2 + i * .45, .3, 60); });
+      pop($("standing"), t, C.good + 1.6, .4);
+    }
+    const e = t >= C.fifteen;
+    ["fifteen", "promo"].forEach(id => show(id, e));
+    if (e) {
+      fifEls.forEach((x, i) => pop(x, t, C.fifteen + .05 + i * .05, .25, 40));
+      slam($("promo"), t, C.fifteen + .5);
+    }
+  }
+
+  // ---- 6 ----
+  if (t >= C.login && t < C.dash) {
+    const shotOn = t < C.keys;
+    ["lshot", "lc1", "lc2"].forEach(id => show(id, shotOn));
+    if (shotOn) {
+      const s = $("lshot"), W = 1100, sc = W / 1520;
+      s.style.left = "120px"; s.style.top = 90 + (1 - eo(lin(t, C.login, C.login + .5))) * 60 + "px"; s.style.width = W + "px";
+      s.style.opacity = lin(t, C.login, C.login + .4) * (1 - lin(t, C.keys - .3, C.keys));
+      // card rects in the cropped 1520x1110 screenshot
+      const r = t < C.bunker ? [88, 272, 512, 940] : [548, 272, 972, 940];
+      hl($("lhl"), r, sc, t, C.login + .5, C.keys - .2);
+      inout($("lc1"), t, C.login + .5, C.bunker, 60); inout($("lc2"), t, C.bunker, C.keys, 60);
+    }
+    const k = t >= C.keys && t < C.et;
+    ["laptop", "keyword"].forEach(id => show(id, k));
+    if (k) {
+      pop($("laptop"), t, C.keys, .4, 40);
+      $("key").style.transform = `rotate(${Math.sin(t * 3) * 8}deg)`;
+      pop($("keyword"), t, C.keys + .6, .4);
+    }
+    const e = t >= C.et;
+    ["unlike", "phone", "home", "etline"].forEach(id => show(id, e));
+    if (e) {
+      pop($("unlike"), t, C.et, .3);
+      const ph = $("phone"); pop(ph, t, C.et + .3, .3, 0);
+      ph.querySelector(".p").style.transform = `rotate(${t < C.nophone ? Math.sin(t * 50) * 10 : 0}deg)`; // ringing
+      ph.querySelector(".no").style.opacity = lin(t, C.nophone, C.nophone + .15);
+      ph.querySelector(".no").style.transform = `scale(${1.4 - .4 * eo(lin(t, C.nophone, C.nophone + .2))})`;
+      pop($("home"), t, C.et + .5, .3);
+      slam($("etline"), t, C.nophone + .3);
+    }
+  }
+
+  // ---- 7 ----
+  if (t >= C.dash && t < C.end) {
+    const s = $("dshot"), W = 1120, sc = W / 1460;
+    const z = eo(lin(t, C.dash, C.dash + .6));
+    s.style.left = "100px"; s.style.top = 90 + (1 - z) * 60 + "px"; s.style.width = W + "px"; s.style.opacity = z;
+    inout($("dc1"), t, C.dash + .3, C.feed, 60);
+    inout($("dc2"), t, C.feed, C.nip05, 60); inout($("dc3"), t, C.nip05, C.invites, 60); inout($("dc4"), t, C.invites, C.end + .3, 60);
+    const r = t < C.feed ? [8, 10, 1447, 345] : t < C.nip05 ? [8, 490, 947, 1100] : t < C.invites ? [112, 612, 335, 650] : [178, 388, 305, 442];
+    hl($("dhl"), r, sc, t, C.dash + .5, C.end);
+  }
+
+  // ---- 8 ----
+  if (t >= C.end) {
+    const lp = lin(t, C.end, C.end + .5);
+    $("elogo").style.opacity = lp; $("elogo").style.transform = `scale(${1.2 - .2 * eo(lp)})`;
+    slam($("qq"), t, C.quality);
+    pop($("b1"), t, C.cta, .35); pop($("b2"), t, C.request, .35);
+    $("b2").style.boxShadow = t > C.request + .4 ? `0 0 ${30 + 20 * Math.sin(t * 5)}px rgba(74,222,128,.6)` : "none";
+    pop($("eurl"), t, C.request + .8, .4);
+    show("game", t >= C.game);
+    if (t >= C.game) {
+      $("gamepre").innerHTML = typed([["GREETINGS, PLEB.", null, true], ["SHALL WE PLAY A GAME?", null]], t, C.game - .2, 16, .2).replace(/\n$/, "") +
+        (Math.floor(t * 2.5) % 2 ? "█" : " ");
+      $("gameurl").style.opacity = lin(t, C.speechEnd + .6, C.speechEnd + 1.2);
+    }
+  }
+
+  // ---- captions ----
+  const cap = C.captions.find(c => t >= c.t0 - .05 && t <= c.t1 + .35);
+  capEl.style.display = cap && t < C.game ? "" : "none";
+  if (cap) capEl.textContent = cap.text;
+};
+render(0);
+</script>
+</body>
+</html>
