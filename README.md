@@ -49,7 +49,7 @@ a new take.
 | wot | Its secret weapon? The Web of Trust graph; a bot is denied at the ring; a newcomer is vouched in; five invite tickets |
 | strike | A 🥸 "totally a human" takes an invite and turns out to be a bot; SUSPENDED; three Family Feud strikes; three good months; 15 invites |
 | login | The real login page: NIP-07 extension, NIP-46 remote signer; the key stays on the laptop; Unlike E.T., it does not phone home |
-| dash | The real dashboard: control surface, live feed, you@pleb.one (NIP-05), invites |
+| dash | The real dashboard: control surface, live feed, NIP-05 (the callout cycles you@relay, id, me and nostr.pleb.one), invites |
 | end | Logo, Quality > Quantity, Get an invite / Request Invite, then the WarGames terminal: SHALL WE PLAY A GAME? |
 
 Fonts: Anton, Space Grotesk and Inter (Google Fonts, so rendering needs network) and

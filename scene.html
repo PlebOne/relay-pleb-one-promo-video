@@ -276,7 +276,7 @@
   <div class="shot" id="dshot"><img src="../assets/dashboard-crop.png"><div class="hl" id="dhl"></div></div>
   <div class="call" id="dc1" style="left:1310px;top:150px"><div class="k">MEMBERS ONLY</div><b>The relay control surface</b><span class="s">Events, publishers and activity at a glance.</span></div>
   <div class="call" id="dc2" style="left:1310px;top:420px"><div class="k">LIVE FEED</div><b>Straight off the wire</b><span class="s">Notes stream in from wss://relay.pleb.one in real time.</span></div>
-  <div class="call" id="dc3" style="left:1310px;top:420px"><div class="k">IDENTITY · NIP-05</div><b>you@pleb.one ✓</b><span class="s">A verified name your Nostr client shows off.</span></div>
+  <div class="call" id="dc3" style="left:1310px;top:420px"><div class="k">IDENTITY · NIP-05</div><b>you@<span id="nipdom">relay</span>.pleb.one ✓</b><span class="s">Pick your domain: relay, id, me or nostr. A verified name your Nostr client shows off.</span></div>
   <div class="call" id="dc4" style="left:1310px;top:420px"><div class="k">INVITES</div><b>Ready to share</b><span class="s">Hand them to people you'd vouch for.</span>
     <div id="minitk" style="display:flex;gap:10px;margin-top:16px"></div></div>
 </div>
@@ -618,6 +618,10 @@ window.render = function (t) {
     inout($("dc2"), t, C.feed, C.nip05, 60); inout($("dc3"), t, C.nip05, C.invites, 60); inout($("dc4"), t, C.invites, C.end + .3, 60);
     const r = t < C.feed ? [8, 10, 1447, 345] : t < C.nip05 ? [8, 490, 947, 1100] : t < C.invites ? [112, 612, 335, 650] : [178, 388, 305, 442];
     hl($("dhl"), r, sc, t, C.dash + .5, C.end);
+    // the four NIP-05 domains, one after another
+    const doms = ["relay", "id", "me", "nostr"];
+    $("nipdom").textContent = doms[Math.min(3, Math.floor(lin(t, C.nip05 + .35, C.invites - .2) * 4))];
+    $("nipdom").style.color = "#4ade80";
   }
 
   // ---- 8 ----
