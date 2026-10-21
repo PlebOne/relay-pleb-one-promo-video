@@ -29,6 +29,8 @@ ffmpeg -y -i out/video-silent.mp4 -i out/audio.wav -c:v copy \
   -movflags +faststart out/relay-pleb-one-promo.mp4
 ```
 
+YouTube thumbnail: `node thumbnail.mjs` renders `thumbnail.html` to `out/thumbnail.png` (1280x720).
+
 Preview frames: `node render.mjs --stills 12 30 52`, then `./sheet.sh out/sheet.png 12 30 52`.
 `node audio.mjs --music` writes `out/music-only.wav` (same mix, no voice) for checking the balance.
 
